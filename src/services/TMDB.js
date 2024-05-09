@@ -13,15 +13,21 @@ export const tmdbApi = createApi({
 
     //* Get trending movies
     getMovies: builder.query({
-      // query: () => `movie/popular?page=${page}&api_key=${tmdbApiKey}`,
-      query: ({ genreOrCategoryName, page }) => {
+      //! query: () => `movie/popular?page=${page}&api_key=${tmdbApiKey}`,
+      query: ({ genreOrCategoryName, page, searchQuery }) => {
+        //* get movie by search
+        if (searchQuery) {
+          return `/search/movie?query=${searchQuery}&page=${page}&api_key=${tmdbApiKey}`;
+        }
+        //* get movie by vategory
         if (genreOrCategoryName && typeof genreOrCategoryName === "string") {
           return `movie/${genreOrCategoryName}?page=${page}&api_key=${tmdbApiKey}`;
         }
+        //* get movie by genre
         if (genreOrCategoryName && typeof genreOrCategoryName === "number") {
           return `discover/movie?with_genres=${genreOrCategoryName}&page=${page}&api_key=${tmdbApiKey}`;
         }
-
+        //* Get movies by trending
         return `trending/movie/day?page=${page}&api_key=${tmdbApiKey}`;
       },
     }),
