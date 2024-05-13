@@ -21,6 +21,7 @@ import { Search, Sidebar } from "../PageIndex";
 import { fetchToken, createSessionId, moviesApi } from "../../utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, userSelector } from "../../features/auth";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { isAuth, user } = useSelector(userSelector);
@@ -52,7 +53,7 @@ const Navbar = () => {
     };
 
     logInUser();
-  }, [token]);
+  }, [token, dispatch, sessionIdFromLocalStorage]);
 
   return (
     <>
@@ -87,6 +88,7 @@ const Navbar = () => {
                 to={`/profile/${user.id}`}
                 className={classes.linkButton}
                 onClick={() => {}}
+                // onClick={() => navigate(`/profile/${user.id}`)}
               >
                 {!isMobile && <> My Movies &nbsp;</>}
                 <Avatar

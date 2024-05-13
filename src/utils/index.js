@@ -10,14 +10,14 @@ export const moviesApi = axios.create({
 export const fetchToken = async () => {
   try {
     const { data } = await moviesApi.get("/authentication/token/new");
-    const token = data.request_token;
+    const token = await data.request_token;
 
     if (data.success) {
       localStorage.setItem("request_token", token);
       window.location.href = `https://www.themoviedb.org/authenticate/${token}?redirect_to=${window.location.origin}/approved`;
     }
   } catch (error) {
-    console.log("Sorry, your token could not be created");
+    console.log(error);
   }
 };
 

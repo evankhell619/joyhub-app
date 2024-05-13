@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   user: {},
-  isAuthenticated: false,
+  isAuth: false,
   sessionId: "",
 };
 
@@ -12,7 +12,7 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
-      state.isAuthenticated = true;
+      state.isAuth = true;
       state.sessionId = localStorage.getItem("session_id");
 
       localStorage.setItem("accountId", action.payload.id);
