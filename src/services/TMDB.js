@@ -6,28 +6,28 @@ export const tmdbApi = createApi({
   reducerPath: "tmdbApi",
   baseQuery: fetchBaseQuery({ baseUrl: "https://api.themoviedb.org/3" }),
   endpoints: (builder) => ({
-    //* Get Genres
+    // Get Genres
     getGenres: builder.query({
       query: () => `genre/movie/list?&api_key=${tmdbApiKey}`,
     }),
 
-    //* Get trending movies
+    // Get trending movies
     getMovies: builder.query({
-      //! query: () => `movie/popular?page=${page}&api_key=${tmdbApiKey}`,
+      // query: () => `movie/popular?page=${page}&api_key=${tmdbApiKey}`,
       query: ({ genreOrCategoryName, page, searchQuery }) => {
-        //* get movie by search
+        // get movie by search
         if (searchQuery) {
           return `/search/movie?query=${searchQuery}&page=${page}&api_key=${tmdbApiKey}`;
         }
-        //* get movie by vategory
+        // get movie by vategory
         if (genreOrCategoryName && typeof genreOrCategoryName === "string") {
           return `movie/${genreOrCategoryName}?page=${page}&api_key=${tmdbApiKey}`;
         }
-        //* get movie by genre
+        // get movie by genre
         if (genreOrCategoryName && typeof genreOrCategoryName === "number") {
           return `discover/movie?with_genres=${genreOrCategoryName}&page=${page}&api_key=${tmdbApiKey}`;
         }
-        //* Get movies by trending
+        // Get movies by trending
         return `trending/movie/day?page=${page}&api_key=${tmdbApiKey}`;
       },
     }),
@@ -37,8 +37,18 @@ export const tmdbApi = createApi({
       query: (id) =>
         `/movie/${id}?append_to_response=videos,credits&api_key=${tmdbApiKey}`,
     }),
+
+    //Get User Specifict list
+    getRecommendation: builder.query({
+      query: ({ movie_id, list }) =>
+        `/movie/${movie_id}/${list}?api_key=${tmdbApiKey}`,
+    }),
   }),
 });
 
-export const { useGetGenresQuery, useGetMoviesQuery, useGetMovieQuery } =
-  tmdbApi;
+export const {
+  useGetGenresQuery,
+  useGetMoviesQuery,
+  useGetMovieQuery,
+  useGetRecommendationQuery,
+} = tmdbApi;
