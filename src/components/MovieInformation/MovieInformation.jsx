@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Typography,
@@ -45,11 +45,15 @@ const MovieInformation = () => {
       list: "/recommendations",
       movie_id: id,
     });
+  const [open, setOpen] = useState(false);
 
   const isMovieFavorite = false;
   const isMovieWatchlist = false;
   const addToFavorite = () => {};
   const addToWatchlist = () => {};
+
+  const videoKey =
+    data?.videos?.results?.length > 0 ? data.videos.results[0].key : null;
 
   if (isFetching) {
     return (
@@ -180,7 +184,11 @@ const MovieInformation = () => {
                 >
                   IMDB
                 </Button>
-                <Button onClick={() => {}} href="#" endIcon={<Theaters />}>
+                <Button
+                  onClick={() => setOpen(true)}
+                  href="#"
+                  endIcon={<Theaters />}
+                >
                   Trailer
                 </Button>
               </ButtonGroup>
@@ -233,6 +241,23 @@ const MovieInformation = () => {
           <Box>Sorry nothing was found</Box>
         )}
       </Box>
+      <Modal
+        closeAfterTransition
+        className={classes.modal}
+        open={open}
+        onClose={() => setOpen(false)}
+      >
+        {videoKey && (
+          <iframe
+            autoPlay
+            className={classes.videos}
+            frameBorder="0"
+            title="Trailer"
+            src={`https://www.youtube.com/embed/${videoKey}`}
+            allow="autoplay"
+          />
+        )}
+      </Modal>
     </Grid>
   );
 };
