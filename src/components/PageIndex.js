@@ -8,3 +8,4 @@ export { default as Movie } from "./Movie/Movie.jsx";
 export { default as Search } from "./Search/Search.jsx";
 export { default as Pagination } from "./Pagination/Pagination.jsx";
 export { default as RatedCard } from "./RatedCard/RatedCard.jsx";
+export { default as FeatureMovie } from "./FeatureMovie/FeatureMovie.jsx";

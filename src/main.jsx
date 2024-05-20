@@ -12,15 +12,12 @@ import {
 import useStyle from "./style";
 import store from "./app/store";
 import { Provider } from "react-redux";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ToggleMode from "./utils/ToggleMode";
-import useAlan from "./components/Alan";
-
-// const theme = createTheme({});
+import Alan from "./components/Alan";
+import "./index.css";
 const App = () => {
   const classes = useStyle();
   const alanBtnContainer = useRef();
-  useAlan();
 
   return (
     <div className={classes.root}>
@@ -37,6 +34,7 @@ const App = () => {
             <Route path="/approved" element={<Movies />} />
           </Routes>
         </main>
+        <Alan />
       </Router>
       <div ref={alanBtnContainer} />
     </div>
