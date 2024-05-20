@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,10 +14,13 @@ import store from "./app/store";
 import { Provider } from "react-redux";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ToggleMode from "./utils/ToggleMode";
+import useAlan from "./components/Alan";
 
 // const theme = createTheme({});
 const App = () => {
   const classes = useStyle();
+  const alanBtnContainer = useRef();
+  useAlan();
 
   return (
     <div className={classes.root}>
@@ -35,6 +38,7 @@ const App = () => {
           </Routes>
         </main>
       </Router>
+      <div ref={alanBtnContainer} />
     </div>
   );
 };
