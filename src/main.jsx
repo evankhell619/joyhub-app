@@ -13,8 +13,9 @@ import useStyle from "./style";
 import store from "./app/store";
 import { Provider } from "react-redux";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import ToggleMode from "./utils/ToggleMode";
 
-const theme = createTheme({});
+// const theme = createTheme({});
 const App = () => {
   const classes = useStyle();
 
@@ -41,9 +42,9 @@ const App = () => {
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
+      <ToggleMode>
         <App />
-      </ThemeProvider>
+      </ToggleMode>
     </Provider>
   </React.StrictMode>
 );

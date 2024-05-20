@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Typography,
@@ -30,16 +30,31 @@ import { selectGenreOrCategory } from "../../features/currentGenreOrCate";
 
 import genreIcons from "../../assets/genres";
 import {
+  useGetListQuery,
   useGetMovieQuery,
   useGetRecommendationQuery,
 } from "../../services/TMDB";
 import { MovieList } from "../PageIndex";
+import { userSelector } from "../../features/auth";
 
 const MovieInformation = () => {
+  const { user } = useSelector(userSelector);
   const classes = useStyles();
   const dispatch = useDispatch();
   const { id } = useParams();
   const { data, isFetching, error } = useGetMovieQuery(id);
+  const { data: favoriteMovies, refetch: refetchFavorite } = useGetListQuery({
+    listName: "favorite/movies",
+    accountId: user.id,
+    sessionId: localStorage.getItem("session_id"),
+    page: 1,
+  });
+  const { data: watchlistMovies, refetch: refetchWatchlist } = useGetListQuery({
+    listName: "watchlist/movies",
+    accountId: user.id,
+    sessionId: localStorage.getItem("session_id"),
+    page: 1,
+  });
   const { data: recommendation, isFetching: isRecommendationFetching } =
     useGetRecommendationQuery({
       list: "/recommendations",
@@ -47,11 +62,46 @@ const MovieInformation = () => {
     });
   const [open, setOpen] = useState(false);
 
-  const isMovieFavorite = false;
-  const isMovieWatchlist = false;
-  const addToFavorite = () => {};
-  const addToWatchlist = () => {};
+  const [isMovieFavorite, setIsMovieFavorite] = useState(false);
+  const [isMovieWatchlist, setIsMovieWatchlist] = useState(false);
 
+  const tmdbApiKey = import.meta.env.VITE_ASU;
+
+  const addToFavorite = async () => {
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${
+        user.id
+      }/favorite?api_key=${tmdbApiKey}&session_id=${localStorage.getItem(
+        "session_id"
+      )}`,
+      { media_type: "movie", media_id: id, favorite: !isMovieFavorite }
+    );
+    setIsMovieFavorite((prev) => !prev);
+    refetchFavorite();
+  };
+  const addToWatchlist = async () => {
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${
+        user.id
+      }/watchlist?api_key=${tmdbApiKey}&session_id=${localStorage.getItem(
+        "session_id"
+      )}`,
+      { media_type: "movie", media_id: id, watchlist: !isMovieWatchlist }
+    );
+    setIsMovieWatchlist((prev) => !prev);
+    refetchWatchlist();
+  };
+
+  useEffect(() => {
+    setIsMovieFavorite(
+      !!favoriteMovies?.results?.find((movie) => movie?.id === data?.id)
+    );
+  }, [favoriteMovies, data]);
+  useEffect(() => {
+    setIsMovieWatchlist(
+      !!watchlistMovies?.results?.find((movie) => movie?.id === data?.id)
+    );
+  }, [watchlistMovies, data]);
   const videoKey =
     data?.videos?.results?.length > 0 ? data.videos.results[0].key : null;
 
@@ -72,7 +122,12 @@ const MovieInformation = () => {
   }
   return (
     <Grid container className={classes.containerMain}>
-      <Grid item sm={12} lg={4}>
+      <Grid
+        item
+        sm={12}
+        lg={4}
+        style={{ display: "flex", marginBottom: "30px" }}
+      >
         <img
           className={classes.poster}
           src={`https://image.tmdb.org/t/p/w500/${data?.poster_path}`}
@@ -98,11 +153,7 @@ const MovieInformation = () => {
             </Typography>
           </Box>
           <Typography variant="h6" align="center" gutterBottom>
-            {" "}
-            {data?.runtime}min
-            {data?.spoken_languages.length > 0
-              ? `/${data?.spoken_languages[0].name}`
-              : ""}
+            {data?.runtime}min | Language : {data?.spoken_languages[0].name}
           </Typography>
         </Grid>
         <Grid item className={classes.genresContainer}>
